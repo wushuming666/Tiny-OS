@@ -83,7 +83,7 @@ rd_disk_m_16:
 	;LBA地址15~8位写入端口0x1f4
 	mov cl, 8
 	shr eax, cl		;将eax中存储的扇区数量向右移动8位
-	mov dx, 0x1f4
+	mov dx, 0x1f4	
 	out dx, al
 
 	;LBA地址23~16位写入端口0x1f5
@@ -105,11 +105,11 @@ rd_disk_m_16:
 ; 第4步:检测硬件状态
     .not_ready:
 	; 同一端口,写时表示写入命令字,读时表示读入硬盘状态
-	nop
-	in al, dx
+	nop					; 不做任何事情,填充下
+	in al, dx			; 从端口读取数据
 	and al, 0x88		; 第3位为1表示硬盘控制器已准备好数据传输
 				; 第7位为1表示硬盘忙
-	cmp al, 0x08
+	cmp al, 0x08		; 相等时ZF被置1  大于CF 1  小于SF 1
 	jnz .not_ready		; 若未准备好,继续等
 
 ; 第5步:从0x1f0端口读数据
